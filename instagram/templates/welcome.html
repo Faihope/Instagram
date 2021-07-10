@@ -1,0 +1,28 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+<div class="col-md-9  col-sm-9 col-md-4 col-lg-9">
+    <div class="container">
+        <div class="row">
+            {% for photo in photos %}
+            <div class=" col-sm-8 col-md-8 col-lg-8">
+                <div class="card my-2 ">
+                    <a style="text-decoration: none;" href="" class="btn btn-outline-light btn-sm m-1">
+                        <img class="image-thumbail" src="{{ photo.image.url}}" width="700px" alt="Card image cap"></a>
+
+
+                    <div class="card-body">
+                        <small>{{photo.caption}}</small>
+                    </div>
+
+                </div>
+            </div>
+            {% empty %}
+            <h2>No photos ....</h2>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{%endblock%}
