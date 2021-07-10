@@ -9,7 +9,8 @@ urlpatterns=[
     url('^$',views.welcome,name = 'welcome'),
     url('^upload/$',views.upload,name = 'upload'),
     url('^register/',views.register,name='register'),
-    url('^login/',views.login,name='login'),
+    url('^login/',views.loginpage,name='loginpage'),
+     url('^logout/&',views.logoutuser,name='logoutuser'),
 ]
 if settings.DEBUG:
     urlpatterns+= static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
