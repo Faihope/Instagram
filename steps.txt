@@ -1,3 +1,0 @@
-create urls.py file in your app folder
-include your app urls in the projects urls.py file and remember to import include
-in the settings.py file include your app 

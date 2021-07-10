@@ -65,3 +65,6 @@ def upload(request):
 
     return render(request,'upload.html')
 
+def profilepage(request):
+    return render(request,'profile.html')
+
