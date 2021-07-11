@@ -23,3 +23,6 @@ class Image(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save_image(self):
+        self.save()
