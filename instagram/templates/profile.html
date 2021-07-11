@@ -1,44 +1,52 @@
 {% extends 'base.html'%}
 
 {% block content %}
-<div class=" container content-section">
-  <div class="row">
-    {%for profile in profile%}
-    <div class="col-md-2">
-      <img class="rounded-circle account-img" src="{{profile.profile_pic.url}}" width="80px" height="80px">
+<div class="container">
 
-    </div>
-    <div class="col-md-10">
-      <p class="text-secondary">{{ user.username }}</p>
-      <h2 class="account-heading"> {{profile.bio}}</h2>
-      <p class="text-secondary">{{ user.email }}</p>
 
-    </div>
+  <div class=" container content-section">
+    <div class="row">
+      {%for profile in profile%}
+      <div class="col-md-2">
+        <img class="rounded-circle account-img" src="{{profile.profile_pic.url}}" width="80px" height="80px">
+
+      </div>
+      <div class="col-md-10">
+        <p class="text-secondary">{{ user.username }}</p>
+        <h2 class="account-heading"> {{profile.bio}}</h2>
+        <p class="text-secondary">{{ user.email }}</p>
+
+      </div>
       <div class="media">
 
         <div class="media-body">
-         
-          
+
+
         </div>
       </div>
 
-      
-      {% endfor%}
-    
-  </div>
-  <!-- FORM HERE -->
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <fieldset class="form-group">
-      <legend class="border-bottom mb-4">Profile Info</legend>
-      
-      {{ u_form }}
-      {{ p_form}}
-    </fieldset>
-    <div class="form-group">
-      <button class="btn btn-outline-info" type="submit">Update</button>
-    </div>
-  </form>
-</div>
 
+      {% endfor%}
+
+    </div>
+    {% for photo in photos %}
+    <div class="row">
+     
+      <div class=" col-sm-8 col-md-8 col-lg-8">
+        <h6>My posts</h6>
+        <div class="card my-2 col-md-12 ">
+          
+          <a style="text-decoration: none;" href="" class="btn btn-outline-light btn-sm m-1">
+            <img class="image-thumbail" src="{{ photo.image.url}}" width="700px" height="500px"
+              alt="Card image cap"></a>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+
+    <!-- FORM HERE -->
+  </div>
+</div>
 {%endblock%}

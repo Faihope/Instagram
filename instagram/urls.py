@@ -6,12 +6,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns=[
-    url('^$',views.welcome,name = 'welcome'),
-    url('^upload/$',views.upload,name = 'upload'),
-    url('^register/',views.register,name='register'),
-    url('^login/',views.loginpage,name='loginpage'),
-    url('^logout/&',views.logoutuser,name='logoutuser'),
-    url('^profile/&',views.profilepage,name='profilepage'),
+    url(r'^$',views.welcome,name = 'welcome'),
+    url(r'^upload/$',views.upload,name = 'upload'),
+    url(r'^register/$',views.register,name='register'),
+    url(r'',views.loginpage,name='loginpage'),
+    url(r'^logout/&',views.logoutuser,name='logoutuser'),
+    url(r'^profile/&',views.profilepage,name='profilepage'),
+     url(r'^search/', views.search_results, name='search_results'),
 ]
 if settings.DEBUG:
     urlpatterns+= static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
