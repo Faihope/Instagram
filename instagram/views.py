@@ -1,12 +1,13 @@
 from django import forms
 from django.shortcuts import render,redirect
-from .models import Image
+from .models import Image,Profile
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CreateUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from .forms import UpdateuserForm,UpdateprofileForm
 # Create your views here.
 @login_required(login_url='login')
 def welcome(request):
@@ -45,12 +46,12 @@ def loginpage(request):
        
     context={}
     return render(request,'login.html',context)
-
+@login_required(login_url='login')
 def logoutuser(request):
     logout(request)
     return redirect(reverse('loginpage'))
 
-
+@login_required(login_url='login')
 def upload(request):
     if request.method == 'POST':
 
@@ -65,6 +66,14 @@ def upload(request):
 
     return render(request,'upload.html')
 
+@login_required(login_url='login')
 def profilepage(request):
-    return render(request,'profile.html')
+    current_user = request.user
+    profile = Profile.objects.all()
+    u_form=UpdateuserForm()
+    p_form=UpdateprofileForm()
+
+    context={'u_form':u_form,'p_form':p_form,'current_user':current_user,'profile':profile}
+
+    return render(request,'profile.html',context)
 

@@ -8,13 +8,18 @@
             {% for photo in photos %}
             <div class=" col-sm-8 col-md-8 col-lg-8">
                 <div class="card my-2 ">
+                    <div class="card-header bg-transparent border-success">{{photo.name}}</div>
                     <a style="text-decoration: none;" href="" class="btn btn-outline-light btn-sm m-1">
-                        <img class="image-thumbail" src="{{ photo.image.url}}" width="700px" alt="Card image cap"></a>
+                        <img class="image-thumbail" src="{{ photo.image.url}}" width="700px" height="500px"
+                            alt="Card image cap"></a>
 
-
+                    <p class="para ml-4">{{photo.caption}}</p>
+                    <p class="para ml-4">{{photo.likes}}</p>
+                    <p class="para ml-4"></p>
                     <div class="card-body">
-                        <small>{{photo.caption}}</small>
+                        <small></small>
                     </div>
+                    <div class="card-footer bg-transparent border-success">{{photo.comments}}</div>
 
                 </div>
             </div>

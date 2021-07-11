@@ -7,17 +7,26 @@
 
       <!-- Links -->
       <ul class="nav justify-content-start  mr-5">
-        <a class="navbar-brand" href="#">Instagram</a>
-        <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
+        <a class="navbar-brand" href="{% url 'welcome'%}">Instagram</a>
+        <li class="active"><a href="{% url 'welcome'%}">Home <span class="sr-only">(current)</span></a></li>
         <li><a href="{% url 'upload'%}">Upload image</a></li>
-        <li><a href="#">Inbox</a></li>
-        <li><a href="{% url 'profilepage'%}">Profile </a></li>
+       
+        <ul class="nav justify-content-end  ml-5">
+       
+          <li><a href="{% url 'profilepage'%}"> Profile </a></li>
+          <li>
+           <a  href="{% url 'logoutuser'%}">Logout</a>
+          </li>
+        </ul>
       </ul>
+
+      
 
 
     </div>
 
   </div>
-  <span><a href="{% url 'logoutuser'%}">Logout</a></span>
+ 
+  
 </nav>
 {%endblock%}
