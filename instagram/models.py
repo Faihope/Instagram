@@ -11,6 +11,9 @@ class Profile(models.Model):
     def __str__(self):
         return self.bio
 
+    def save_profile(self):
+        self.save()
+
 
 class Image(models.Model):
     image=models.ImageField(blank=True,null=False)
