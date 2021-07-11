@@ -29,3 +29,8 @@ class Image(models.Model):
 
     def delete_image(self):
         self.delete()
+    
+    @classmethod
+    def update_caption(self):
+        caption=Image.objects.get_or_create()
+        return caption

@@ -24,6 +24,11 @@ class ImageTestclass(TestCase):
         self.myimage.delete_image()
         self.assertTrue(len(images_record)==0)
 
+    def test_update_caption(self):
+        new_caption=Image.update_caption()
+        expected_caption=f'{new_caption}'
+        self.assertTrue(expected_caption,'new_image')
+
 
 
 
