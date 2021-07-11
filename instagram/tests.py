@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Image
+from .models import Image, Profile
 
 # Create your tests here.
 class ImageTestclass(TestCase):
@@ -30,9 +30,15 @@ class ImageTestclass(TestCase):
         self.assertTrue(expected_caption,'new_image')
 
 
+class ProfileTestclass(TestCase):
+    #setup method
+    def setUp(self):
+        self.myprofile=Profile(profile_pic='image',bio='Hardworking')
 
-
-
+    #Testing Instance
+    def test_instance(self):
+        self.assertTrue(isinstance(self.myprofile,Profile))
+    
 
 
 
