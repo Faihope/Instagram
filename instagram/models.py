@@ -17,6 +17,11 @@ class Profile(models.Model):
     def delete_profile(self):
         self.delete()
 
+    @classmethod
+    def update_profile(self):
+        profile=Profile.objects.get_or_create()
+        return profile
+
 
 class Image(models.Model):
     image=models.ImageField(blank=True,null=False)
