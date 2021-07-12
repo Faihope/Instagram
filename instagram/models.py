@@ -27,10 +27,10 @@ class Image(models.Model):
     image=models.ImageField(blank=True,null=False)
     name=models.CharField(max_length=100)
     caption=models.TextField(max_length=400)
-    likes=models.IntegerField(default=0)
-    comments=models.CharField(max_length=1000)
+    liked=models.ManyToManyField(User,default=None,blank=True,related_name='liked')
+    comments=models.TextField(max_length=100)
     profile=models.ForeignKey(Profile,on_delete=models.CASCADE,null=True)
-   
+    author=models.ForeignKey(User,on_delete=models.CASCADE,related_name='author',null=True)
 
     def __str__(self):
         return self.name
@@ -45,3 +45,17 @@ class Image(models.Model):
     def update_caption(self):
         caption=Image.objects.get_or_create()
         return caption
+    @property
+    def num_likes(self):
+        return self.likes.all().count()
+LIKE_CHOICES=(
+    ('Like','Like'),
+    ('Unlike','Unlike')
+)
+class Like(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    image=models.ForeignKey(Image,on_delete=models.CASCADE)
+    value=models.CharField(choices=LIKE_CHOICES,default='Like',max_length=10)
+    
+    def __str__(self):
+        return self.image
