@@ -4,16 +4,18 @@ from .models import Image,Profile
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CreateUserForm
 from django.contrib import messages
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import authenticate,login,logout as dj_login
 from django.urls import reverse
+from django.contrib.auth import login as dj_login
+
 from django.contrib.auth.decorators import login_required
-from .forms import UpdateuserForm,UpdateprofileForm
+from .forms import UpdateuserForm,UpdateprofileForm,ImageForm
 # Create your views here.
 @login_required(login_url='login')
 def welcome(request):
     photos=Image.objects.all()
 
-    print(photos)
+    
     context= { 'photos':photos}
     return render (request,'welcome.html',context)
 
@@ -29,10 +31,10 @@ def register(request):
             form.save()
             user=form.cleaned_data.get('username')
             messages.success(request,'Account for ' + user + ' was created successfully')
-        return redirect('loginpage')
+        return redirect(reverse('loginpage'))
     context={'form':form}
     
-    return render(request,'register.html',context)
+    return render(request,'register.html')
 
 def loginpage(request):
     if request.method == 'POST':
@@ -41,17 +43,17 @@ def loginpage(request):
 
         user = authenticate(request,username=username,password=password)
         if user is not None:
-            loginpage(request,user)
-            return redirect('welcome')
+            login(request,user)
+            return redirect(reverse('welcome'))
         else:
             messages.info(request,'Username or password is incorrect')
        
     context={}
     return render(request,'login.html',context)
 @login_required(login_url='login')
-def logoutuser(request):
-    logout(request)
-    return redirect('login')
+def logout(request):
+    
+    return redirect(reverse('login'))
 
 
 def upload(request):
@@ -60,10 +62,11 @@ def upload(request):
         data=request.POST
         image=request.FILES.get('image')
         photo = Image.objects.create(
-            
-                image=image
+                image=image,
+              
+                
                 )
-        return redirect('welcome')
+        return redirect(reverse('welcome'))
 
 
     return render(request,'upload.html')
@@ -89,5 +92,24 @@ def search_results(request):
 
     else:
         message = "You haven't searched for any term"
-        return render(request, 'search_pic.html',{"message":message})
+        return render(request, 'search.html',{"message":message})
 
+@login_required(login_url='login/')
+def like(request,image_id):
+	photo = Image.objects.get(id=image_id)
+	likes +=1
+	save_like()
+	return redirect(timeline)
+
+def uploadImage(request):
+    if request.method == "POST":
+
+        form=ImageForm(data=request.POST,files=request.FILES)
+        if form.is_valid():
+            form.save()
+            obj=form.instance
+        return redirect('welcome')
+    else:
+        form=ImageForm()
+        img=Image.objects.all()
+    return render(request,"index.html",{"form":form})

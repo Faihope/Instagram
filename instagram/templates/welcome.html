@@ -2,34 +2,45 @@
 
 {% block content %}
 
-    <div class="container">
-        <div class="row">
-            {% for photo in photos %}
-            <div class=" col-sm-8 col-md-8 col-lg-8">
-                <div class="card my-2 ">
-                    <div class="card-header bg-transparent border-success"> 
-                        {{user}}
-                    
-                    </div>
-                    <a style="text-decoration: none;" href="" class="btn btn-outline-light btn-sm m-1">
-                        <img class="image-thumbail" src="{{ photo.image.url}}" width="700px" height="500px"
-                            alt="Card image cap"></a>
-                            <!-- <div class="col-md-2">
-                                <button class="btn btn-success ml-5 mr-5 ">{{photo.likes}}</button>
-
-                            </div>
-                    <div class="card-body">
-                        <small></small>
-                    </div>
-                    <div class="card-footer bg-transparent border-success">Add comment....</div> -->
+<div class="container">
+    <div class="row">
+        {% for photo in photos %}
+        <div class=" col-sm-8 col-md-8 col-lg-8">
+            <div class="card my-2 ">
+                <div class="card-header bg-transparent border-light">
+                    {{user.username}}
 
                 </div>
+                <a style="text-decoration: none;" href="" class="btn btn-outline-light btn-sm m-1">
+                    <img class="image-thumbail" src="{{ photo.image.url}}" width="700px" height="500px"
+                        alt="Card image cap"></a>
+                       <p class="cap ml-4">{{photo.caption}}</p> 
+                <div class="col-md-2">
+                    <button class="btn btn-outline-secondary  ">{{photo.likes}} likes</button>
+
+                </div>
+                <div class="col-md-2">
+                    Comments: 
+                   <b>{{user.username}}</b> {{photo.comments}}
+                   
+
+                </div>
+                <div class="card-body">
+                    <small></small>
+                </div>
+                <div class="card-footer bg-transparent border-secondary">
+                   
+                    <label for="comments"> Add comment....
+                    </label>
+                </div>
+
             </div>
-            {% empty %}
-            <h2>No photos ....</h2>
-            {% endfor %}
         </div>
+        {% empty %}
+        <h2>No photos ....</h2>
+        {% endfor %}
     </div>
+</div>
 
 </div>
 {%endblock%}
