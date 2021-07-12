@@ -27,7 +27,7 @@ class Image(models.Model):
     image=models.ImageField(blank=True,null=False)
     name=models.CharField(max_length=100)
     caption=models.TextField(max_length=400)
-    liked=models.ManyToManyField(User,default=None,blank=True,related_name='liked')
+    liked=models.ManyToManyField(User,default=0,blank=True,related_name='liked')
     comments=models.TextField(max_length=100)
     profile=models.ForeignKey(Profile,on_delete=models.CASCADE,null=True)
     author=models.ForeignKey(User,on_delete=models.CASCADE,related_name='author',null=True)
@@ -49,8 +49,8 @@ class Image(models.Model):
     def num_likes(self):
         return self.likes.all().count()
 LIKE_CHOICES=(
-    ('Like','Like'),
-    ('Unlike','Unlike')
+    ('1','1'),
+    ('-1','-1')
 )
 class Like(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)

@@ -1,6 +1,6 @@
 from django import forms
 from django.shortcuts import render,redirect
-from .models import Image,Profile
+from .models import Image, Like,Profile
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CreateUserForm
 from django.contrib import messages
@@ -14,9 +14,9 @@ from .forms import UpdateuserForm,UpdateprofileForm,ImageForm
 @login_required(login_url='login')
 def welcome(request):
     photos=Image.objects.all()
-
+    user=request.user
     
-    context= { 'photos':photos}
+    context= { 'photos':photos,'user':user}
     return render (request,'welcome.html',context)
 
 
@@ -95,11 +95,24 @@ def search_results(request):
         return render(request, 'search.html',{"message":message})
 
 @login_required(login_url='login/')
-def like(request,image_id):
-	photo = Image.objects.get(id=image_id)
-	likes +=1
-	save_like()
-	return redirect(timeline)
+def like(request):
+    user=request.user
+    if request.method=='POST':
+        image_id=request.POST.get('image_id')
+        image_obj=Image.objects.get(id=image_id)
+
+        if user in image_obj.liked.all():
+            image_obj.liked.remove(user)
+        else:
+            image_obj.liked.add(user)
+        like,created=Like.objects.get_or_create(user=user,image_id=image_id)
+        if not created:
+            if like.value=='Like':
+                like.value='Unlike'
+            else:
+                like.value='Like'
+        like.save()
+        return redirect('welcome')
 
 def uploadImage(request):
     if request.method == "POST":

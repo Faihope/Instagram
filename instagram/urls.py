@@ -15,7 +15,8 @@ urlpatterns=[
     url(r'^logout/&',views.logout,name='logout'),
     url(r'^profile/&',views.profilepage,name='profilepage'),
     url(r'^search/', views.search_results, name='search_results'),
-    
+    url(r'^like/', views.like, name='like'),
+
 ]
 if settings.DEBUG:
     urlpatterns+= static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
