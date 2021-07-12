@@ -16,6 +16,7 @@ urlpatterns=[
     url(r'^profile/&',views.profilepage,name='profilepage'),
     url(r'^search/', views.search_results, name='search_results'),
     url(r'^like/', views.like, name='like'),
+    path(r'^photo/<str:pk>',views.viewPhoto,name='photo'),
 
 ]
 if settings.DEBUG:

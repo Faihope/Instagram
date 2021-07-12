@@ -126,3 +126,7 @@ def uploadImage(request):
         form=ImageForm()
         img=Image.objects.all()
     return render(request,"index.html",{"form":form})
+
+def viewPhoto(request,pk=int):
+    photo=Image.objects.get(id=pk)
+    return render(request,'photo.html',{'photo':photo})
