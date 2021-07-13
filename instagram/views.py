@@ -1,6 +1,9 @@
 from django import forms
+from django.contrib.auth.models import User
+from django.db.models.fields import json
+from django.http import response
 from django.shortcuts import render,redirect
-from .models import Image, Like,Profile
+from .models import Following, Image, Like,Profile
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CreateUserForm
 from django.contrib import messages
@@ -11,18 +14,12 @@ from django.contrib.auth import login as dj_login
 from django.contrib.auth.decorators import login_required
 from .forms import UpdateuserForm,UpdateprofileForm,ImageForm
 # Create your views here.
-@login_required(login_url='login')
-def welcome(request):
-    photos=Image.objects.all()
-    user=request.user
-    
-    context= { 'photos':photos,'user':user}
-    return render (request,'welcome.html',context)
 
 
 def register(request):
     if request.user.is_authenticated:
         return redirect('welcome')
+    
     form = CreateUserForm()
 
     if request.method == 'POST':
@@ -34,7 +31,7 @@ def register(request):
         return redirect(reverse('loginpage'))
     context={'form':form}
     
-    return render(request,'register.html')
+    return render(request,'register.html',context)
 
 def loginpage(request):
     if request.method == 'POST':
@@ -55,32 +52,62 @@ def logout(request):
     
     return redirect(reverse('login'))
 
+@login_required(login_url='login')
+def welcome(request):
+    photos=Image.objects.all()
+    user=request.user
+    
+    context= { 'photos':photos,'user':user}
+    return render (request,'welcome.html',context)
 
-def upload(request):
+
+@login_required
+def profile(request):
     if request.method == 'POST':
+        u_form = UpdateuserForm(request.POST, instance=request.user)
+        p_form = UpdateprofileForm(request.POST,
+                                   request.FILES,
+                                   instance=request.user.profile) 
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your account has been updated!')
+            return redirect('profile') # Redirect back to profile page
 
-        data=request.POST
-        image=request.FILES.get('image')
-        photo = Image.objects.create(
-                image=image,
-              
-                
-                )
-        return redirect(reverse('welcome'))
+    else:
+        u_form = UpdateuserForm(instance=request.user)
+        p_form = UpdateprofileForm(instance=request.user.profile)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form
+    }
+
+    return render(request, 'profile.html', context)
 
 
-    return render(request,'upload.html')
+# def profilepage(username,request):
+#     user=User.objects.filter(username)
+#     if user:
+#     # current_user = request.user
+#         profile = Profile.objects.get(user=user)
+#         bio=profile.bio
+        
+#     if request.method == "POST":
+#         form=ImageForm(data=request.POST,files=request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             obj=form.instance
+#             return redirect(reverse("profile.html",{"obj":obj}))
+#         else:
+#             form=ImageForm()
+#         img=Image.objects.all()
+#         return render(request,'profile.html', {'img':img,'form':form})
+    
 
+    # context={'u_form':u_form,'p_form':p_form,'current_user':current_user,'profile':profile}
 
-def profilepage(request):
-    current_user = request.user
-    profile = Profile.objects.all()
-    u_form=UpdateuserForm()
-    p_form=UpdateprofileForm()
-
-    context={'u_form':u_form,'p_form':p_form,'current_user':current_user,'profile':profile}
-
-    return render(request,'profile.html',context)
+    # return render(request,'profile.html',context=context)
 
 def search_results(request):
     if 'photos' in request.GET and request.GET["photos"]:
@@ -130,3 +157,23 @@ def uploadImage(request):
 def viewPhoto(request,pk=int):
     photo=Image.objects.get(id=pk)
     return render(request,'photo.html',{'photo':photo})
+
+def follow(request,username):
+    obj=Following.objects.all()
+    main_user=request.user
+    to_follow=User.objects.get(username=username)
+
+    following=Following.objects.filter(user=main_user,followed=to_follow)
+    is_following=True  if following else False
+
+    if is_following:
+        Following.unfollow(main_user,to_follow)
+        is_following=False
+    else:
+        Following.follow(main_user,to_follow)
+        is_following=False
+    resp={'following':is_following}
+    response=json.dump(resp)
+   
+    return render(request,'profile.html',response,context_type='application/json',username=username)
+
