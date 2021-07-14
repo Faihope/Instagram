@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.db.models.fields import json
 from django.http import response
-from django.shortcuts import render,redirect
-from .models import Following, Image, Like,Profile
+from django.shortcuts import render,redirect,get_object_or_404
+from .models import Following, Image, Like,Profile,Comment
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CreateUserForm
 from django.contrib import messages
@@ -12,26 +12,29 @@ from django.urls import reverse
 from django.contrib.auth import login as dj_login
 
 from django.contrib.auth.decorators import login_required
-from .forms import UpdateuserForm,UpdateprofileForm,ImageForm
+from .forms import UpdateuserForm,UpdateprofileForm,ImageForm,CommentForm
 # Create your views here.
 
 
-def register(request):
-    if request.user.is_authenticated:
-        return redirect('welcome')
+def registeruser(request):
+    # if request.user.is_authenticated:
+    #     return redirect('welcome')
     
-    form = CreateUserForm()
-
+    title = 'Register - instagram'
     if request.method == 'POST':
-        form=CreateUserForm(request.POST)
+        form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            user=form.cleaned_data.get('username')
-            messages.success(request,'Account for ' + user + ' was created successfully')
-        return redirect(reverse('loginpage'))
-    context={'form':form}
-    
-    return render(request,'register.html',context)
+            messages.success(request, 'Account Created Successfully!. Check out our Email later :)')
+
+            return redirect('login')
+    else:
+        form = CreateUserForm
+    context = {
+            'title':title,
+            'form':form,
+                        }
+    return render(request, 'register.html', context)
 
 def loginpage(request):
     if request.method == 'POST':
@@ -47,6 +50,7 @@ def loginpage(request):
        
     context={}
     return render(request,'login.html',context)
+    
 @login_required(login_url='login')
 def logout(request):
     
@@ -177,3 +181,26 @@ def follow(request,username):
    
     return render(request,'profile.html',response,context_type='application/json',username=username)
 
+def post_detail(request, slug):
+    
+    post = get_object_or_404(Image, slug=slug)
+    comments = post.comments.filter(active=True)
+    new_comment = None
+    # Comment posted
+    if request.method == 'POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+
+            # Create Comment object but don't save to database yet
+            new_comment = comment_form.save(commit=False)
+            # Assign the current post to the comment
+            new_comment.post = post
+            # Save the comment to the database
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
+
+    return render(request, 'comment.html', {'post': post,
+                                           'comments': comments,
+                                           'new_comment': new_comment,
+                                           'comment_form': comment_form})
